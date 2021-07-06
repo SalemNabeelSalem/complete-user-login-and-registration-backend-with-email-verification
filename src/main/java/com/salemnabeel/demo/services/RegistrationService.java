@@ -27,9 +27,9 @@ public class RegistrationService {
     @Autowired
     private EmailSender emailSender;
 
-    public String register(RegistrationRequest request) {
+    public String register(RegistrationRequest registerRequest) {
 
-        boolean isValidEmail = emailValidator.test(request.getEmail());
+        boolean isValidEmail = emailValidator.test(registerRequest.getEmail());
 
         if (!isValidEmail) {
 
@@ -38,17 +38,17 @@ public class RegistrationService {
 
         String token = userService.signUpUser(
             new User(
-                request.getFirstName(),
-                request.getLastName(),
-                request.getEmail(),
-                request.getPassword(),
+                registerRequest.getFirstName(),
+                registerRequest.getLastName(),
+                registerRequest.getEmail(),
+                registerRequest.getPassword(),
                 UserRole.USER
             )
         );
 
         String link = "http://localhost:9409/api/v1/public/registration/confirm?token=" + token;
 
-        emailSender.send(request.getEmail(), buildEmail(request.getFirstName(), link));
+        emailSender.send(registerRequest.getEmail(), buildEmail(registerRequest.getFirstName(), link));
 
         return link;
     }

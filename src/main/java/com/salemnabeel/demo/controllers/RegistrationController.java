@@ -13,9 +13,9 @@ public class RegistrationController {
     private RegistrationService registrationService;
 
     @PostMapping
-    public String register(@RequestBody RegistrationRequest request) {
+    public String register(@RequestBody RegistrationRequest registerRequest) {
 
-        return registrationService.register(request);
+        return registrationService.register(registerRequest);
     }
 
     @GetMapping(path = "confirm")
