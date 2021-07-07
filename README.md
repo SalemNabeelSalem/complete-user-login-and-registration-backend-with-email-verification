@@ -1,2 +1,2 @@
-# users-login-and-registration-with-email-verifications-spring-boot-with-mysql
-This repository is an example of user login and registration with an email verifications using spring-boot application with mysql database.
+# login-and-registration-with-email-verifications-spring-boot-with-mysql
+This is an example of users login and registration system with an email verifications using spring-boot project with mysql database.
