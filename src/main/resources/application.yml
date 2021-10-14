@@ -19,7 +19,8 @@ spring:
     show-sql: true
   mail:
     host: localhost
-    port: 25
+    # port: 25 # Docker MailDev SMTP Server Running.
+    port: 1025 # Npm MailDev SMTP Server Running.
     username: test
     password: test
     properties:

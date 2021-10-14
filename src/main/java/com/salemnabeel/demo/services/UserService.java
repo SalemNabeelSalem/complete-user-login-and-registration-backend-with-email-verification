@@ -39,8 +39,6 @@ public class UserService implements UserDetailsService {
 
         if (userExists) {
 
-            // TODO: check of other attributes are the same.
-
             // TODO: if email is not confirmed send confirmation email again.
 
             throw new IllegalStateException("email is already taken.");
@@ -55,7 +53,7 @@ public class UserService implements UserDetailsService {
         String token = UUID.randomUUID().toString();
 
         ConfirmationToken confirmationToken = new ConfirmationToken(
-            token, LocalDateTime.now(), LocalDateTime.now().plusMinutes(15), user
+            token, LocalDateTime.now(), LocalDateTime.now().plusDays(1), user
         );
 
         confirmationTokenService.saveConfirmationToken(confirmationToken);
