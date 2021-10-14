@@ -1,15 +1,17 @@
 package com.salemnabeel.demo.entities;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
-@Table(name = "confirmation_token")
+@Table(name = "confirmation_tokens")
 public class ConfirmationToken {
 
     @Id

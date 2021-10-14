@@ -6,49 +6,46 @@ import com.salemnabeel.demo.models.RegistrationRequest;
 import com.salemnabeel.demo.services.email.EmailSender;
 import com.salemnabeel.demo.entities.ConfirmationToken;
 import com.salemnabeel.demo.services.email.EmailValidator;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 @Service
+@AllArgsConstructor
 public class RegistrationService {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private ConfirmationTokenService confirmationTokenService;
+    private final ConfirmationTokenService confirmationTokenService;
 
-    @Autowired
-    private EmailValidator emailValidator;
+    private final EmailValidator emailValidator;
 
-    @Autowired
-    private EmailSender emailSender;
+    private final EmailSender emailSender;
 
-    public String register(RegistrationRequest registerRequest) {
+    public String register(RegistrationRequest registrationRequest) {
 
-        boolean isValidEmail = emailValidator.test(registerRequest.getEmail());
+        boolean isValidEmail = emailValidator.test(registrationRequest.getEmail());
 
         if (!isValidEmail) {
 
-            throw new IllegalStateException("email not valid.");
+            throw new IllegalStateException("email address is not valid.");
         }
 
         String token = userService.signUpUser(
             new User(
-                registerRequest.getFirstName(),
-                registerRequest.getLastName(),
-                registerRequest.getEmail(),
-                registerRequest.getPassword(),
+                registrationRequest.getFirstName(),
+                registrationRequest.getLastName(),
+                registrationRequest.getEmail(),
+                registrationRequest.getPassword(),
                 UserRole.USER
             )
         );
 
         String link = "http://localhost:9409/api/v1/public/registration/confirm?token=" + token;
 
-        emailSender.send(registerRequest.getEmail(), buildEmail(registerRequest.getFirstName(), link));
+        emailSender.send(registrationRequest.getEmail(), buildEmail(registrationRequest.getFirstName(), link));
 
         return link;
     }
@@ -57,19 +54,19 @@ public class RegistrationService {
     public String confirmToken(String token) {
 
         ConfirmationToken confirmationToken = confirmationTokenService.findToken(token).orElseThrow(
-            () -> new IllegalStateException("token not found.")
+            () -> new IllegalStateException("token is not found.")
         );
 
         if (confirmationToken.getConfirmedAt() != null) {
 
-            throw new IllegalStateException("email already confirmed.");
+            throw new IllegalStateException("email is already confirmed.");
         }
 
         LocalDateTime expiredAt = confirmationToken.getExpiresAt();
 
         if (expiredAt.isBefore(LocalDateTime.now())) {
 
-            throw new IllegalStateException("token expired.");
+            throw new IllegalStateException("token is expired.");
         }
 
         confirmationTokenService.setConfirmedAt(token);

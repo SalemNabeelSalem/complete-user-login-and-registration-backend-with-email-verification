@@ -3,7 +3,7 @@ package com.salemnabeel.demo.services;
 import com.salemnabeel.demo.entities.User;
 import com.salemnabeel.demo.repositories.UserRepository;
 import com.salemnabeel.demo.entities.ConfirmationToken;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,18 +14,16 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class UserService implements UserDetailsService {
 
-    private final static String USER_NOT_FOUND_MSG = "user with email %s not found.";
+    private final static String USER_NOT_FOUND_MSG = "user with email %s is not found.";
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private ConfirmationTokenService confirmationTokenService;
+    private final ConfirmationTokenService confirmationTokenService;
 
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -35,40 +33,38 @@ public class UserService implements UserDetailsService {
         );
     }
 
-    public String signUpUser(User userRequest) {
+    public String signUpUser(User user) {
 
-        boolean userExists = userRepository.findByEmail(userRequest.getEmail()).isPresent();
+        boolean userExists = userRepository.findByEmail(user.getEmail()).isPresent();
 
         if (userExists) {
 
-            // TODO: check of attributes are the same.
+            // TODO: check of other attributes are the same.
 
-            // TODO: if email not confirmed send confirmation email.
+            // TODO: if email is not confirmed send confirmation email again.
 
-            throw new IllegalStateException("email already taken.");
+            throw new IllegalStateException("email is already taken.");
         }
 
-        String encodedPassword = bCryptPasswordEncoder.encode(userRequest.getPassword());
+        String encodedPassword = bCryptPasswordEncoder.encode(user.getPassword());
 
-        userRequest.setPassword(encodedPassword);
+        user.setPassword(encodedPassword);
 
-        userRepository.save(userRequest);
+        userRepository.save(user);
 
         String token = UUID.randomUUID().toString();
 
         ConfirmationToken confirmationToken = new ConfirmationToken(
-            token, LocalDateTime.now(), LocalDateTime.now().plusMinutes(15), userRequest
+            token, LocalDateTime.now(), LocalDateTime.now().plusMinutes(15), user
         );
 
         confirmationTokenService.saveConfirmationToken(confirmationToken);
 
-        // TODO: send email.
-
         return token;
     }
 
-    public int enableUser(String email) {
+    public void enableUser(String email) {
 
-        return userRepository.enableUser(email);
+        userRepository.enableUser(email);
     }
 }

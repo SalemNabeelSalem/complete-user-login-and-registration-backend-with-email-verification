@@ -2,17 +2,17 @@ package com.salemnabeel.demo.services;
 
 import com.salemnabeel.demo.entities.ConfirmationToken;
 import com.salemnabeel.demo.repositories.ConfirmationTokenRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class ConfirmationTokenService {
 
-    @Autowired
-    private ConfirmationTokenRepository confirmationTokenRepository;
+    private final ConfirmationTokenRepository confirmationTokenRepository;
 
     public void saveConfirmationToken(ConfirmationToken token) {
 
@@ -24,8 +24,8 @@ public class ConfirmationTokenService {
         return confirmationTokenRepository.findByToken(token);
     }
 
-    public int setConfirmedAt(String token) {
+    public void setConfirmedAt(String token) {
 
-        return confirmationTokenRepository.updateConfirmedAt(token, LocalDateTime.now());
+        confirmationTokenRepository.updateConfirmedAt(token, LocalDateTime.now());
     }
 }

@@ -2,23 +2,23 @@ package com.salemnabeel.demo.controllers;
 
 import com.salemnabeel.demo.models.RegistrationRequest;
 import com.salemnabeel.demo.services.RegistrationService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping(path = "/api/v1/public/registration")
 public class RegistrationController {
 
-    @Autowired
-    private RegistrationService registrationService;
+    private final RegistrationService registrationService;
 
-    @PostMapping
+    @PostMapping("")
     public String register(@RequestBody RegistrationRequest registerRequest) {
 
         return registrationService.register(registerRequest);
     }
 
-    @GetMapping(path = "confirm")
+    @GetMapping(path = "/confirm")
     public String confirm(@RequestParam("token") String token) {
 
         return registrationService.confirmToken(token);

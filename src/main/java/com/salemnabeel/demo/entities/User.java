@@ -1,9 +1,7 @@
 package com.salemnabeel.demo.entities;
 
 import com.salemnabeel.demo.entities.enums.UserRole;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,9 +10,9 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.Collections;
 
-@Data
+@Getter
+@Setter
 @Entity
-@EqualsAndHashCode
 @NoArgsConstructor
 @Table(name = "users")
 public class User implements UserDetails {
@@ -68,7 +66,7 @@ public class User implements UserDetails {
 
         SimpleGrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role.name());
 
-        return Collections.singleton(grantedAuthority);
+        return Collections.singletonList(grantedAuthority);
     }
 
     @Override
